@@ -26,6 +26,7 @@ import numpy as np
 import pandas as pd
 import pickle
 import json
+from sklearn.preprocessing import LabelEncoder
 
 def _preprocess_data(data):
     """Private helper function to preprocess data for model prediction.
@@ -50,20 +51,23 @@ def _preprocess_data(data):
     # Load the dictionary as a Pandas DataFrame.
     feature_vector_df = pd.DataFrame.from_dict([feature_vector_dict])
 
-    # ---------------------------------------------------------------
-    # NOTE: You will need to swap the lines below for your own data
-    # preprocessing methods.
-    #
-    # The code below is for demonstration purposes only. You will not
-    # receive marks for submitting this code in an unchanged state.
-    # ---------------------------------------------------------------
-
     # ----------- Replace this code with your own preprocessing steps --------
-    predict_vector = feature_vector_df[['Pickup Lat','Pickup Long',
-                                        'Destination Lat','Destination Long']]
+    
+    #Preprocessing of loaded data 
+    feature_vector_df.columns = [col.replace(" ","_") for col in feature_vector_df.columns]
+    train_rd = feature_vector_df
+    Categorical_Train = train_rd.select_dtypes(include=['object'])
+    le = LabelEncoder()
+    encoded_categorical_Train = Categorical_Train.apply(lambda x: le.fit_transform(x))
+    Numeric_Train = train_rd._get_numeric_data()
+    train_encoded = pd.concat([encoded_categorical_Train, Numeric_Train], axis=1)
+    clean_data = train_encoded[:len(data)].drop(['Time_from_Pickup_to_Arrival','Order_No',
+                                  'User_Id','Precipitation_in_millimeters',
+                                       'Temperature'], axis=1)
+    
     # ------------------------------------------------------------------------
 
-    return predict_vector
+    return clean_data
 
 def load_model(path_to_model:str):
     """Adapter function to load our pretrained model into memory.
