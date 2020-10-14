@@ -26,6 +26,7 @@ import numpy as np
 import pandas as pd
 import pickle
 import json
+from sklearn.preprocessing import LabelEncoder
 
 def _preprocess_data(data):
     """Private helper function to preprocess data for model prediction.
@@ -50,20 +51,25 @@ def _preprocess_data(data):
     # Load the dictionary as a Pandas DataFrame.
     feature_vector_df = pd.DataFrame.from_dict([feature_vector_dict])
 
-    # ---------------------------------------------------------------
-    # NOTE: You will need to swap the lines below for your own data
-    # preprocessing methods.
-    #
-    # The code below is for demonstration purposes only. You will not
-    # receive marks for submitting this code in an unchanged state.
-    # ---------------------------------------------------------------
-
-    # ----------- Replace this code with your own preprocessing steps --------
-    predict_vector = feature_vector_df[['Pickup Lat','Pickup Long',
-                                        'Destination Lat','Destination Long']]
+    # ----------------------------------------------------------------------
+    
+    #Preprocessing of loaded data 
+    feature_vector_df.columns = [col.replace(" ","_") for col in feature_vector_df.columns]
+   
+    feature_vector_df = data.merge(riders, how='left', on='Rider_Id')
+    Categorical_Data = feature_vector_df.select_dtypes(include=['object'])
+    le = LabelEncoder()
+    encoded_categorical_Data = Categorical_Data.apply(lambda x: le.fit_transform(x))
+    Numeric_Data = feature_vector_df._get_numeric_data()
+    data_encoded = pd.concat([encoded_categorical_Data, Numeric_Data], axis=1)
+    
+    cols = ['Time_from_Pickup_to_Arrival','Order_No','User_Id','Precipitation_in_millimeters','Temperature']
+    x = [i for i in cols if i in data_encoded.columns]
+    clean_data = data_encoded[:len(data)].drop(x,axis =1)
+    
     # ------------------------------------------------------------------------
 
-    return predict_vector
+    return clean_data
 
 def load_model(path_to_model:str):
     """Adapter function to load our pretrained model into memory.
