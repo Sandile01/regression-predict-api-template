@@ -1,28 +1,24 @@
 """
     Simple file to create a Sklearn model for deployment in our API
-
     Author: Explore Data Science Academy
-
     Description: This script is responsible for training a simple linear
     regression model which is used within the API for initial demonstration
     purposes.
-
 """
 
 # Dependencies
 import pandas as pd
 import pickle
-from sklearn.linear_model import LinearRegression,, Ridge, Lasso
+from sklearn.linear_model import LinearRegression
 
 # Fetch training data and preprocess for modeling
 train = pd.read_csv('data/train_data.csv')
 riders = pd.read_csv('data/riders.csv')
-train_rd = train.merge(riders, how='left', on='Rider Id')
-
+train = train.merge(riders, how='left', on='Rider Id')
 
 y_train = train[['Time from Pickup to Arrival']]
 X_train = train[['Pickup Lat','Pickup Long',
-                 'Destination Lat','Destination Long','Order No','User Id','Personal or Business','Placement - Time','Confirmation - Time','']]
+                 'Destination Lat','Destination Long']]
 
 # Fit model
 lm_regression = LinearRegression(normalize=True)
