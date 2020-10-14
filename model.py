@@ -51,19 +51,23 @@ def _preprocess_data(data):
     # Load the dictionary as a Pandas DataFrame.
     feature_vector_df = pd.DataFrame.from_dict([feature_vector_dict])
 
-    # ----------- Replace this code with your own preprocessing steps --------
+    # ----------------------------------------------------------------------
     
     #Preprocessing of loaded data 
     feature_vector_df.columns = [col.replace(" ","_") for col in feature_vector_df.columns]
-    train_rd = feature_vector_df
-    Categorical_Train = train_rd.select_dtypes(include=['object'])
+
+    feature_vector_df = data.merge(riders, how='left', on='Rider_Id')
+    Categorical_Data = feature_vector_df.select_dtypes(include=['object'])
     le = LabelEncoder()
-    encoded_categorical_Train = Categorical_Train.apply(lambda x: le.fit_transform(x))
-    Numeric_Train = train_rd._get_numeric_data()
-    train_encoded = pd.concat([encoded_categorical_Train, Numeric_Train], axis=1)
-    clean_data = train_encoded[:len(data)].drop(['Time_from_Pickup_to_Arrival','Order_No',
-                                  'User_Id','Precipitation_in_millimeters',
-                                       'Temperature'], axis=1)
+    encoded_categorical_Data = Categorical_Data.apply(lambda x: le.fit_transform(x))
+    Numeric_Data = feature_vector_df._get_numeric_data()
+    data_encoded = pd.concat([encoded_categorical_Data, Numeric_Data], axis=1)
+    
+    cols = ['Time_from_Pickup_to_Arrival','Order_No','User_Id','Precipitation_in_millimeters','Temperature']
+    
+    for col in cols:
+        if col in data_encoded.columns:
+            clean_data = data_encoded.drop(columns=col, axis=1)
     
     # ------------------------------------------------------------------------
 
