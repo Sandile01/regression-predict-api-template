@@ -56,16 +56,17 @@ def _preprocess_data(data):
     #Preprocessing of loaded data 
     feature_vector_df.columns = [col.replace(" ","_") for col in feature_vector_df.columns]
    
-    feature_vector_df = data.merge(riders, how='left', on='Rider_Id')
     Categorical_Data = feature_vector_df.select_dtypes(include=['object'])
     le = LabelEncoder()
     encoded_categorical_Data = Categorical_Data.apply(lambda x: le.fit_transform(x))
     Numeric_Data = feature_vector_df._get_numeric_data()
     data_encoded = pd.concat([encoded_categorical_Data, Numeric_Data], axis=1)
     
-    cols = ['Time_from_Pickup_to_Arrival','Order_No','User_Id','Precipitation_in_millimeters','Temperature']
+    cols = ['Arrival_at_Destination_-_Time' , 'Arrival_at_Destination_-_Day_of_Month',
+            'Arrival_at_Destination_-_Weekday_(Mo_=_1)' ,'Time_from_Pickup_to_Arrival',
+            'Order_No','User_Id','Precipitation_in_millimeters','Temperature']
     x = [i for i in cols if i in data_encoded.columns]
-    clean_data = data_encoded[:len(data)].drop(x,axis =1)
+    clean_data = data_encoded[:len(data)].drop(x,axis =1) 
     
     # ------------------------------------------------------------------------
 
