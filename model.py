@@ -67,10 +67,11 @@ def _preprocess_data(data):
             'Order_No','User_Id','Precipitation_in_millimeters','Temperature']
     x = [i for i in cols if i in data_encoded.columns]
     clean_data = data_encoded[:len(data)].drop(x,axis =1) 
+    predict_vector = clean_data
     
     # ------------------------------------------------------------------------
 
-    return clean_data
+    return predict_vector
 
 def load_model(path_to_model:str):
     """Adapter function to load our pretrained model into memory.
