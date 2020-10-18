@@ -21,13 +21,7 @@
 import requests
 import pandas as pd
 import numpy as np
-import pickle
-import json
-from sklearn.preprocessing import LabelEncoder
-from sklearn.model_selection import train_test_split
-from sklearn.model_selection import GridSearchCV
-from xgboost import plot_importance
-import xgboost as xgb
+
 
 # Load data from file to send as an API POST request.
 # We prepare a DataFrame with the public test set + riders data
