@@ -77,7 +77,7 @@ def _preprocess_data(data):
     
     # ------------------------------------------------------------------------
 
-    return predict_vector
+    return predict_vector.to_json()
 
 test = _preprocess_data(test)
 
