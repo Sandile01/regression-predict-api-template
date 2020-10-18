@@ -22,6 +22,7 @@ import requests
 import pandas as pd
 import numpy as np
 
+
 # Load data from file to send as an API POST request.
 # We prepare a DataFrame with the public test set + riders data
 # from the Zindi challenge.
